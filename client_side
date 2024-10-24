@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Directory Synchronizer</title>
+</head>
+<body>
+    <h2>Directory Synchronizer</h2>
+
+    <input type="file" id="fileInput" webkitdirectory directory multiple />
+    <button id="syncButton">Sync</button>
+
+    <script>
+        document.getElementById('syncButton').onclick = async function() {
+            const input = document.getElementById('fileInput');
+            const files = input.files;
+
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files[]', files[i], files[i].webkitRelativePath);
+            }
+
+            try {
+                const response = await fetch('/sync', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                console.log('Sync result:', result);
+            } catch (error) {
+                console.error('Sync failed:', error);
+            }
+        };
+    </script>
+</body>
+</html>
